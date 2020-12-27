@@ -1,0 +1,45 @@
+html, body {height:100%;margin: 0;}
+
+body{
+    margin: 0;
+    padding: 0;
+    padding-right: 0 !important
+}
+body::-webkit-scrollbar{ 
+    width:0px;
+}
+body::-webkit-scrollbar-track{
+    background: #ccc;
+    border-radius:2px;
+    -webkit-border-radius:2px;
+    -moz-border-radius:2px;
+    -ms-border-radius:2px;
+    -o-border-radius:2px;
+}
+body::-webkit-scrollbar-thumb{
+    background: #3cabcf;
+    border-radius:10px;
+    -webkit-border-radius:10px;
+    -moz-border-radius:10px;
+    -ms-border-radius:10px;
+    -o-border-radius:10px;
+}
+body::-webkit-scrollbar-thumb:hover{
+    background: #333;
+}
+body::-webkit-scrollbar-corner{
+    background: #179a16;
+}
+
+ul,li{
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+p, h1,h2,h3,h4{
+    margin: 0;
+}
+/* 路由激活样式 */
+.rou-active{
+    color: #2e2efa !important;
+}

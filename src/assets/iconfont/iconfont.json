@@ -1,0 +1,65 @@
+{
+  "id": "2144036",
+  "name": "medical",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "14095239",
+      "name": "点赞",
+      "font_class": "dianzan",
+      "unicode": "e775",
+      "unicode_decimal": 59253
+    },
+    {
+      "icon_id": "1010090",
+      "name": "公告",
+      "font_class": "gonggao",
+      "unicode": "e608",
+      "unicode_decimal": 58888
+    },
+    {
+      "icon_id": "1217795",
+      "name": "热门",
+      "font_class": "remen",
+      "unicode": "e62f",
+      "unicode_decimal": 58927
+    },
+    {
+      "icon_id": "5532907",
+      "name": "推荐",
+      "font_class": "tuijian1",
+      "unicode": "e636",
+      "unicode_decimal": 58934
+    },
+    {
+      "icon_id": "7708016",
+      "name": "资讯",
+      "font_class": "zixun",
+      "unicode": "e619",
+      "unicode_decimal": 58905
+    },
+    {
+      "icon_id": "2077556",
+      "name": "消息",
+      "font_class": "xiaoxi",
+      "unicode": "e644",
+      "unicode_decimal": 58948
+    },
+    {
+      "icon_id": "6539856",
+      "name": "认证",
+      "font_class": "renzheng",
+      "unicode": "e60a",
+      "unicode_decimal": 58890
+    },
+    {
+      "icon_id": "7738015",
+      "name": "用户",
+      "font_class": "yonghu",
+      "unicode": "e607",
+      "unicode_decimal": 58887
+    }
+  ]
+}
