@@ -65,11 +65,7 @@ export default {
                             type: 'success',
                             message: '退出成功!'
                         })
-                        if(this.$router.history.current.path !== '/medical'){
-                            this.$router.push('/medical')
-                        } else {
-                            this.$router.go(0);
-                        }
+                        this.$router.push('/medical/login')
                     }
                 }).catch(err => {
                     this.$message({

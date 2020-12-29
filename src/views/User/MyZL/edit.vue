@@ -118,6 +118,8 @@ export default {
                                     this.$router.push('/user/myzl')
                                 }
                             })
+                        } else {
+                            console.log(res.data.message)
                         }
                     }).catch(err => {
                         this.$alert('服务器超时，请稍后重试！','提示',{
@@ -176,7 +178,7 @@ export default {
         padding-left: 10px;
     }
     .el-form{
-        width: 50%;
+        width: 70%;
         .el-form-item{
             text-align: left;
         }

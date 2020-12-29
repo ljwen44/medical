@@ -21,7 +21,10 @@ router.post('/updateInfo', async(req, res) => {
 	    var dataBuffer = Buffer.from(imgData, 'base64')
 	    //写入文件
 	    let imgPath = upload + uuid.v1() + '.png'
-	    fs.writeFileSync(imgPath, dataBuffer)
+		fs.writeFileSync(imgPath, dataBuffer)
+		if(fs.existsSync(user.avatar)){
+			fs.unlinkSync(user.avatar)
+		}
 	    params.avatar = imgPath
 	}
 	if(params.IDpass.startsWith('data:image')){
@@ -29,8 +32,10 @@ router.post('/updateInfo', async(req, res) => {
 	    var dataBuffer1 = Buffer.from(imgData1, 'base64')
 	    //写入文件
 	    let imgPath1 = upload + uuid.v1() + '.png'
-	    fs.writeFileSync(imgPath1, dataBuffer1)
-	    fs.unlinkSync(user.IDpass)
+		fs.writeFileSync(imgPath1, dataBuffer1)
+		if(fs.existsSync(user.IDpass)){
+			fs.unlinkSync(user.IDpass)
+		}
 	    params.IDpass = imgPath1
 	}
 	for(let key in params){

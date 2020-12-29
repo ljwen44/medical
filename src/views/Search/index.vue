@@ -47,7 +47,6 @@ export default {
             }).then(res => {
                 if(res.data.message === 'OK'){
                     this.total = res.data.total
-                    console.log(this.total)
                 } else {
                     this.$message(res.data.message)
                 }

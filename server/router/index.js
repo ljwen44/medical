@@ -24,7 +24,8 @@ router.post("/login", async(req, res) => {
             email: params.email
         })
         if(user && bcrypt.compareSync(params.password, user.password)){
-            user.password = ''
+            user = user.toObject()
+            delete user.password
             if(user.type !== "管理员"){
                 let focus
                 await Focus.find({
