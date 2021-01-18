@@ -1,7 +1,7 @@
 <template>
     <div class="wrapper">
         <el-container class="elContainer_login">
-            <h3>医疗咨询平台</h3>
+            <h3 @click="gotoLogin">医疗咨询平台</h3>
             <el-main>
                 <el-steps :active="active" finish-status="success">
                     <el-step title="手机验证"></el-step>
@@ -12,7 +12,9 @@
                     <el-form-item label="手机号码" v-show="active === 1" prop="userPhone">
                         <el-input v-model="form.userPhone" autocomplete="off" show-word-limit maxlength="11" placeholder="请输入手机号码">
                             <template slot="append">
-                                <el-button type="warning" @click="handleClick">发送</el-button>
+                                <el-button type="warning" @click="handleClick" :disabled="time !== 60">
+                                    {{time === 60? "发送" : time + "s"}}
+                                </el-button>
                             </template>
                         </el-input>
                     </el-form-item>
@@ -30,8 +32,7 @@
                         <el-button type="success" @click="gotoLogin">点击返回登录</el-button>
                     </div>
                 </el-form>
-                <el-button style="margin-top: 12px;" @click="pre" :disabled="active === 1">上一步</el-button>
-                <el-button style="margin-top: 12px; float:right;" @click="next" :disabled="active === 3">下一步</el-button>
+                <el-button style="margin-top: 12px; float:right;" @click="next" v-if="active !== 3">下一步</el-button>
             </el-main>
         </el-container>
     </div>
@@ -79,7 +80,6 @@ export default {
             reg: /^((13[0-9])|(14[5,7,9])|(15[^4])|(18[0-9])|(17[0,1,3,5,6,7,8]))\d{8}$/, // 手机验证
             rules: {
                 userPhone: [
-                    // { required: true, message: "手机号码不能为空", trigger: 'blur'},
                     { validator: validatePhone, trigger: 'blur' }
                 ],
                 pass: [
@@ -88,20 +88,109 @@ export default {
                 checkPass: [
                     { validator: validatePass2, trigger: 'blur' }
                 ]
-            }
+            },
+            time: 60,
+            flag: false // 手机发送状态
         }
     },
     methods: {
         next() {
-            console.log(this.active)
-            if (this.active++ > 2) this.active = 1;
-            console.log(this.active)
-        },
-        pre(){
-            if (this.active-- < 1) this.active = 1;
+            if(this.active === 1){
+                if(!this.flag){
+                    this.$message("请进行手机验证!")
+                    return 
+                }  
+                if(!this.form.validCode){
+                    this.$message("请输入验证码!")
+                    return 
+                }
+                // 执行手机验证操作
+                this.axios.post("/validateCode", {
+                    code: this.form.validCode
+                }).then(res => {
+                    if(res.data.message === "OK"){
+                        this.active = 2
+                    } else {
+                        this.$alert(res.data.message, "提示", {
+                            confirmButtonText: "确定",
+                            callback: () => {
+                                this.flag = false
+                            }
+                        })
+                    }
+                }).catch(err => {
+                    this.$alert("操作失败，请稍后重试！", "提示", {
+                        confirmButtonText: "确定"
+                    })
+                })
+            } else {
+                // 执行修改密码操作
+                if(!this.form.pass || !this.form.checkPass){
+                    this.$message("请填写信息!")
+                    return 
+                }
+                if(this.form.pass.trim() !== this.form.checkPass.trim()){
+                    this.$message("两次密码输入不一致")
+                    return 
+                }
+                this.axios.post("/updPwdByPhone", {
+                    phone: this.form.userPhone,
+                    newPwd: this.form.pass
+                }).then(res => {
+                    if(res.data.message === "OK"){
+                        this.$message({
+                            message: "修改成功",
+                            type: "success"
+                        })
+                        this.active = 3
+                    } else {
+                        this.$alert(res.data.message, "提示", {
+                            confirmButtonText: "确定"
+                        })
+                    }
+                }).catch(err => {
+                    this.$alert("修改失败，请稍后重试!", "提示", {
+                        confirmButtonText: "确定"
+                    })
+                })
+            }
         },
         handleClick(){
-            this.$message("发送验证码！")
+            if(!this.form.userPhone){
+                this.$message("请填写手机号码")
+                return
+            } 
+            if(!this.reg.test(this.form.userPhone)){
+                this.$message("请填写正确的手机号码")
+                return 
+            }
+            this.axios.post('/sendCode', {
+                phone: this.form.userPhone
+            }).then(res => {
+                if(res.data.message === "OK"){
+                    this.$message({
+                        message: "发送成功！",
+                        type: "success"
+                    })
+                    this.flag = true
+                    let timer = setInterval(() => {
+                        if(this.time > 1){
+                            this.time--
+                        } else {
+                            this.time = 60
+                            clearInterval(timer)
+                        }
+                    }, 1000)
+                } else {
+                    this.$alert(res.data.message, "提示", {
+                        confirmButtonText: "确定"
+                    })
+                }
+            }).catch(err => {
+                this.$alert("获取验证码失败，请刷新重试!", "提示", {
+                    confirmButtonText: "确定"
+                })
+            })
         },
         gotoLogin(){
             this.$router.push('/medical/login')

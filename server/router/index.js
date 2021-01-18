@@ -17,6 +17,7 @@ const upload = 'public/images/'
 let code = '' // 手机验证码
 let startTime = '' // 发送验证码开始时间
 let endTime = '' // 登录时验证码的有效时间
+
 router.post("/login", async(req, res) => {
     let {...params} = req.body
     if(!params.loginType){
@@ -73,10 +74,16 @@ router.post("/login", async(req, res) => {
 router.post("/register", async(req, res) => {
     let {...params} = req.body
     let userIsExist = await User.findOne({email: params.email})
-    if(userIsExist){
-        res.status(200).json({
-            message: "用户已存在！"
-        })
+    if(userIsExist && (userIsExist.email !== "" || userIsExist.phone !== "")){
+        if(userIsExist.email !== "") {
+            res.status(200).json({
+                message: "邮箱已存在！"
+            })
+        } else {
+            res.status(200).json({
+                message: "该手机号码已被注册！"
+            })
+        }
     } else {
         if(params.img){
             var imgData = params.img.replace(/^data:image\/\w+;base64,/, '');
@@ -150,25 +157,49 @@ router.post("/sendCode", async(req, res) => {
             })
         } else {
             res.status(200).json({
-                message: "短信发送失败！"
+                message: "短信发送失败！请检查手机号码是否正确!"
             })
         }
     })
 })
-// app.get("/testphone", (req, res) => {
-//     let code = randomCode(6)
-//     sendCode('13662382308', code, (result) => {
-//         console.log(result)
-//         if(result){
-//             res.status(200).json({
-//                 message: "短信发送成功！"
-//             })
-//         } else {
-//             res.status(200).json({
-//                 message: "短信发送失败！"
-//             })
-//         }
-//     })
-// })
+
+router.post("/validateCode", async(req, res) => {
+    let validateCode = req.body.code
+    endTime = new Date().getTime()
+    let timeCha = endTime - startTime
+    if(timeCha > 1000*60) {
+        res.status(200).json({
+            message: "验证码超时！"
+        })
+    } else {
+        if(validateCode === code){
+            res.status(200).json({
+                message: "OK"
+            })
+        } else {
+            res.status(200).json({
+                message: "验证码错误"
+            })
+        }
+    }
+})
+
+router.post("/updPwdByPhone", async(req, res) => {
+    let {...params} = req.body
+    let user = await User.findOne({phone: params.phone})
+    user.password = bcrypt.hashSync(params.newPwd, salt)
+    await user.save((err, info) => {
+        if(err){
+            res.status(500).json({
+                message: "修改失败，请稍后重试！"
+            })
+            return 
+        }
+        res.status(200).json({
+            message: "OK"
+        })
+    })
+})
+
 module.exports = router
 

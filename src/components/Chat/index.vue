@@ -5,7 +5,7 @@
                 {{recuser.userName || userName}}
             </el-row>
             <el-row class="chatWrapper">
-                <ul ref="chatUL">
+                <ul ref="chatUL" class="chatBoxWrapper">
                     <li :class="item.user._id === user._id ?'right':'left'" v-for="(item, index) in list" :key="index">
                         <div>
                             <el-avatar 
@@ -66,7 +66,6 @@ export default {
                     this.$store.commit('UPDCHATREAD', this.recuser._id)
                 }
             }).catch(err => {
-                console.log(err)
                 this.$message("数据获取异常，请稍后重试！")
             })
         },
@@ -274,6 +273,12 @@ export default {
             }
         }
     }
+}
+.chatBoxWrapper{
+    overflow-y: scroll;
+    scrollbar-color: transparent transparent;
+    scrollbar-track-color: transparent;
+    -ms-scrollbar-track-color: transparent;
 }
 ul::-webkit-scrollbar{ 
     width:1px;

@@ -3,7 +3,7 @@
         <h3>我的回复</h3>
         <div v-if="commentList.length">
             <el-row v-for="(item, index) in commentList" :key="index">
-                <Reply :item="item"></Reply>
+                <Reply :item="item" :uid="user._id"></Reply>
             </el-row>
             <el-pagination
             background

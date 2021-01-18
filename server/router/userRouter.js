@@ -22,8 +22,10 @@ router.post('/updateInfo', async(req, res) => {
 	    //写入文件
 	    let imgPath = upload + uuid.v1() + '.png'
 		fs.writeFileSync(imgPath, dataBuffer)
-		if(fs.existsSync(user.avatar)){
-			fs.unlinkSync(user.avatar)
+		if(user.avatar !== 'public/images/default1.jpg'){
+			if(fs.existsSync(user.avatar)){
+				fs.unlinkSync(user.avatar)
+			}
 		}
 	    params.avatar = imgPath
 	}
@@ -39,10 +41,13 @@ router.post('/updateInfo', async(req, res) => {
 	    params.IDpass = imgPath1
 	}
 	for(let key in params){
-    	user[key] = params[key]
+		if(key !== 'password'){
+			user[key] = params[key]
+		}
     }
 	await user.save((err, info) => {
 		if(err){
+			console.log(err)
 			res.status(400).json({
 				message: "修改失败，请刷新重试！"
 			})

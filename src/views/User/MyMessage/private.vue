@@ -63,7 +63,6 @@ export default {
             this.axios.post("/getReadChatByID", {
                 uid: this.user._id
             }).then(res => {
-                console.log(res.data)
                 if(res.data.message === "OK"){
                     this.$store.commit("NEWCHAT", res.data.data)
                 } else {
@@ -216,6 +215,12 @@ export default {
             text-align: left;
         }
     }
+}
+.chatBoxWrapper{
+    overflow-y: scroll;
+    scrollbar-color: transparent transparent;
+    scrollbar-track-color: transparent;
+    -ms-scrollbar-track-color: transparent;
 }
 ul::-webkit-scrollbar{ 
     width:1px;

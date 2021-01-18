@@ -11,7 +11,7 @@
             <p class="comment">{{item.desc}}</p>
         </el-row>
         <el-row class="reply">
-            <router-link :to="'/detail?_id='+item.text[0]._id" tag="h4">{{item.text[0].title}}</router-link>
+            <router-link :to="'/detail?_id='+item.text[0]._id+'&uid='+uid" tag="h4">{{item.text[0].title}}</router-link>
         </el-row>
     </el-main>
 </template>
@@ -29,8 +29,9 @@ export default {
         }
     },
     props: {
-        item: Object
-    }
+        item: Object,
+        uid: String
+    },
 }
 </script>
 

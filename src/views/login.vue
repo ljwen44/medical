@@ -55,7 +55,7 @@
                     <el-form-item label="手机号码" prop="userPhone">
                         <el-input v-model="form.userPhone" show-word-limit maxlength="11" placeholder="请输入手机号码">
                             <template slot="append">
-                                <el-button type="warning" @click="sendCode" :disabled="time === 60">{{time === 60? '发送' : time + 's'}}</el-button>
+                                <el-button type="warning" @click="sendCode" :disabled="time !== 60">{{time === 60? '发送' : time + 's'}}</el-button>
                             </template>
                         </el-input>
                     </el-form-item>
@@ -121,7 +121,8 @@ export default {
                     { required: true, message: '请输入验证码', trigger: 'blur' }
                 ]
             },
-            time: 60
+            time: 60,
+            flag: false
         }
     },
     methods: {
@@ -172,13 +173,16 @@ export default {
                     })
                 }
             }).catch(err => {
-                console.log(err)
                 this.$alert('服务器错误，请稍后重试！', '提示', {
                     confirmButtonText: '确定'
                 })
             })
         },
         submitReg(){
+            if(!this.form.userEmail || !this.form.userPwd || !this.form.userPhone){
+                this.$message("请先填好信息")
+                return 
+            }
             if(this.form.type === "医生"){
                 if(!this.form.img){
                     this.$alert("请上传证件照！", "提示", {
@@ -187,33 +191,30 @@ export default {
                     return 
                 }
             }
-            let data = {
-                email: this.form.userEmail,
-                password: this.form.userPwd,
-                type: this.form.type,
-                phone: this.form.userPhone,
-                img: this.form.img
+            if(!this.flag){
+                this.$message("请先发送验证码")
+                return 
             }
-            this.axios.post('/register', data)
-            .then(res => {
-                if(res.data.message === "OK"){
-                    this.$alert('注册成功！', '提示', {
-                        confirmButtonText: '确定',
-                        callback: () => {
-                            this.$store.commit('SETUSER', res.data.user)
-                            this.$router.push('/medical')
-                        }
+            if(!this.form.validCode){
+                this.$message("请填写验证码")
+                return 
+            }
+            this.axios.post("/validateCode", {
+                code: this.form.validCode
+            }).then(res => {
+                if(res.data.message !== "OK"){
+                    this.$alert(res.data.message, "提示", {
+                        confirmButtonText: "确定"
                     })
                 } else {
-                    this.$alert(res.data.message, '提示', {
-                        confirmButtonText: '确定'
-                    })
+                    this.valiCodeAfter()
                 }
             }).catch(err => {
-                this.$alert("服务器繁忙，请稍后重试！", '提示', {
-                    confirmButtonText: '确定'
+                this.$alert("操作失败，请稍后重试！", "提示", {
+                    confirmButtonText: "确定"
                 })
             })
+            
         },
         // 发送验证码
         sendCode(){
@@ -225,6 +226,7 @@ export default {
                 phone: this.form.userPhone
             }).then(res => {
                 if(res.data.message === "OK"){
+                    this.flag = true
                     let timer = setInterval(() => {
                         this.time--
                         if(this.time === 0){
@@ -233,7 +235,7 @@ export default {
                         }
                     }, 1000)
                 } else {
-                    this.$alert("短信发送失败，请刷新重试!", "提示", {
+                    this.$alert(res.data.message, "提示", {
                         confirmButtonText: "确定"
                     })
                 }
@@ -266,6 +268,35 @@ export default {
         },
         handleUpdPwd(){
             this.$router.push('/medical/updpwd')
+        },
+        valiCodeAfter(){
+            let data = {
+                email: this.form.userEmail,
+                password: this.form.userPwd,
+                type: this.form.type,
+                phone: this.form.userPhone,
+                img: this.form.img
+            }
+            this.axios.post('/register', data)
+            .then(res => {
+                if(res.data.message === "OK"){
+                    this.$alert('注册成功！', '提示', {
+                        confirmButtonText: '确定',
+                        callback: () => {
+                            this.$store.commit('SETUSER', res.data.user)
+                            this.$router.push('/medical')
+                        }
+                    })
+                } else {
+                    this.$alert(res.data.message, '提示', {
+                        confirmButtonText: '确定'
+                    })
+                }
+            }).catch(err => {
+                this.$alert("服务器繁忙，请稍后重试！", '提示', {
+                    confirmButtonText: '确定'
+                })
+            })
         }
     },
     watch: {

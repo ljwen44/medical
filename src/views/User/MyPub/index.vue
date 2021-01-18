@@ -162,6 +162,7 @@ export default {
 <style lang='less' scoped>
 .el-container{
     .el-main{
+        min-height: 400px;
         h3{
             text-align: left;
             border-left: 5px solid #3cabcf;
