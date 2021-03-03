@@ -13,6 +13,7 @@ const sysRouter = require("./router/sysRouter")
 const commentRouter = require("./router/commentRouter")
 const noticeRouter = require("./router/noticeRouter")
 const chatRouter = require("./router/chatRouter")
+const analysisRouter = require("./router/analysis")
 var io = require('./router/chat.js')
 
 app.use('/public',express.static('public'));//将文件设置成静态
@@ -34,6 +35,7 @@ app.use(sysRouter)
 app.use(commentRouter)
 app.use(noticeRouter)
 app.use(chatRouter)
+app.use(analysisRouter)
 
 io(server)
 
