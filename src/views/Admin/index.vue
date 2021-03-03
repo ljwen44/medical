@@ -27,9 +27,13 @@
                     :default-active="$route.path"
                     :unique-opened="true"
                     class="el-menu-vertical-demo">
+                    <el-menu-item index="/admin/analysis">
+                        <i class="el-icon-s-marketing"></i>
+                        <span slot="title">数据统计</span>
+                    </el-menu-item>
                     <el-menu-item index="/admin/main">
                         <i class="el-icon-s-home"></i>
-                        <span slot="title">首页</span>
+                        <span slot="title">轮播图管理</span>
                     </el-menu-item>
                     <el-submenu index="/admin/user">
                         <template slot="title">

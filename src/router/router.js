@@ -133,12 +133,19 @@ export const routes = [
         meta: {
             title: "管理员"
         },
-        redirect: "/admin/main",
+        redirect: "/admin/analysis",
         children: [
+            {
+                path: 'analysis',
+                meta: {
+                    title: '数据统计'
+                },
+                component: () => import('@/views/Admin/Analysis/index.vue')
+            },
             {
                 path: 'main',
                 meta: {
-                    title: "首页"
+                    title: "轮播图"
                 },
                 component: () => import('@/views/Admin/Main/index.vue'),
                 redirect: "/admin/main/banner",
